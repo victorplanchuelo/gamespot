@@ -25,15 +25,14 @@ export default {
     data() {
         return {
             formData: {
-                email: '',
-                password: ''
+                email: 'victor@gmail.com',
+                password: '1234321'
             }
         }
     },
     methods: {
         onSubmit() {
-            // eslint-disable-next-line no-console
-            console.log(this.formData)
+            this.$store.dispatch('admin/singIn', this.formData)
         }
     }
 }
