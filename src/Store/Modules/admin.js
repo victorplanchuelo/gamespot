@@ -1,5 +1,6 @@
 /* eslint-disable */
-import Vue from 'vue'
+import Vue from 'vue';
+import router from '../../routes'
 
 const FbAuth = 'https://identitytoolkit.googleapis.com/v1/accounts'
 const FbApiKey = 'AIzaSyCsweWo4jsGnzsjRHaPNLqypG42N03sOK0'
@@ -12,15 +13,30 @@ const admin = {
         authFailed: false
     },
     getters: {
-
+        isAuth(state) {
+            return (state.token) ? true : false;
+        }
     },
     mutations: {
         authUser(state, authData) {
             state.token = authData.idToken
             state.refresh = authData.refreshToken
+
+            if (authData.type === 'signin') {
+                router.push('/dashboard')
+            } 
         },
         authFailed(state, type) {
             (type=== 'reset') ? state.authFailed = false : state.authFailed = true;
+        },
+        logoutUser(state) {
+            state.token = null;
+            state.refresh = null;
+
+            localStorage.removeItem('token');
+            localStorage.removeItem('refresh');
+
+            router.push('/')
         }
     }, 
     actions: {
@@ -34,7 +50,7 @@ const admin = {
             .then( authData => {
                 commit("authUser", {
                     ...authData,
-                    type: 'sigin'
+                    type: 'signin'
                 });
 
                 localStorage.setItem("token", authData.idToken)
