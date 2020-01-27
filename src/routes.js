@@ -11,7 +11,26 @@ Vue.use(VueRouter)
 
 const authGuard = {
     beforeEnter: (to, from, next) => {
-        (store.state.admin.token) ? next() : next('/')
+
+        const redirect = () => {
+            (store.state.admin.token) 
+            ? 
+                (to.path === 'signin') ? next('/dashboard') : next() 
+            :
+                (to.path === 'signin') ? next() : next('/')
+        }
+
+        if( store.state.admin.refreshLoading) {
+            //// async code
+            store.watch((state, getters) => getters['admin/refreshLoading'], () => {
+                redirect();
+            })
+        }
+        else {
+            redirect();
+        }
+
+        
     }
 }
 
@@ -22,7 +41,8 @@ const routes = [
     },
     {
         path: '/signin',
-        component:SignIn
+        component:SignIn,
+        ...authGuard 
     },
     {
         path: '/dashboard',
