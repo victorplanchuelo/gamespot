@@ -44,7 +44,7 @@ const admin = {
         },
         refreshLoading(state)
         {
-            this.refreshLoading = false;
+            state.refreshLoading = false;
         }
     }, 
     actions: {

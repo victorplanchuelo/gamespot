@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable no-unused-vars */
 import Vue from 'vue'
 import VueRouter from 'vue-router'
@@ -13,11 +14,12 @@ const authGuard = {
     beforeEnter: (to, from, next) => {
 
         const redirect = () => {
+            console.log(to);
             (store.state.admin.token) 
             ? 
-                (to.path === 'signin') ? next('/dashboard') : next() 
+                (to.path === '/signin') ? next('/dashboard') : next() 
             :
-                (to.path === 'signin') ? next() : next('/')
+                (to.path === '/signin') ? next() : next('/')
         }
 
         if( store.state.admin.refreshLoading) {
