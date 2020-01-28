@@ -5,6 +5,8 @@ import router from './routes'
 import store from './Store/store'
 import Vuelidate from 'vuelidate'
 
+import wysiwyg from 'vue-wysiwyg'
+
 import { MdCard } from 'vue-material/dist/components'
 import 'vue-material/dist/vue-material.min.css'
 
@@ -20,6 +22,9 @@ Vue.http.options.root='https://gamespot-3293a.firebaseapp.com/'
 
 /*Vuelidate*/
 Vue.use(Vuelidate);
+
+/* WYSIWYG */
+Vue.use(wysiwyg, {});
 
 
 new Vue({
