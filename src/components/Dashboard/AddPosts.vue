@@ -40,6 +40,17 @@
 
             <button type="submit">Add post</button>
         </form>
+
+
+        <md-dialog :md-active="dialog">
+            <p>Your post has no content, are you sure you want to post this?</p>
+            <md-dialog-actions>
+                <md-button class="md-primary" @click="dialogOnCancel">Oops, I want to add it.</md-button>
+                <md-button class="md-primary" @click="dialogOnConfirm">Yes, I am sure.</md-button>
+            </md-dialog-actions>
+        </md-dialog>
+
+        <div v-if="addStatusPost" class="post_succesfull">Your post was posted</div>
     </div>
 </template>
 
@@ -49,6 +60,7 @@ import {required, maxLength} from 'vuelidate/lib/validators'
 export default {
     data() {
         return {
+            dialog: false,
             formData: {
                 title: '',
                 desc: '',
@@ -72,9 +84,46 @@ export default {
             }
         }
     },
-    methods: {
-        submitHandler() {
+    computed: {
+        addStatusPost() {
+            let status = this.$store.getters['admin/addPost'];
+            if(status) {
+                this.clearPost()
+            }
 
+            return status;
+        }
+    },
+    methods: {
+        clearPost() {
+            this.$v.$reset();
+            this.formData = {
+                title: '',
+                desc: '',
+                content: '',
+                rating: ''
+            }
+        },
+        submitHandler() {
+            (!this.$v.$invalid) 
+                ?  
+                    (this.formData.content === '') 
+                        ? 
+                            this.dialog = true
+                        :
+                           this.addPost() 
+                : 
+                    alert('something is wrong')
+        },
+        addPost() {
+            this.$store.dispatch('admin/addPost', this.formData)
+        },
+        dialogOnCancel() {
+            this.dialog = false;
+        },
+        dialogOnConfirm() {
+            this.dialog = false;
+            this.addPost();
         }
     }
 }
