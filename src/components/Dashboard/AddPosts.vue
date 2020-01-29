@@ -2,6 +2,18 @@
     <div class="dashboard_form">
         <h1>Add posts</h1>
         <form @submit.prevent="submitHandler">
+
+            <div v-if="imageUpload">
+                <img :src="imageUpload" />>
+            </div>
+
+            <div class="input_field">
+                <input 
+                    type="file"
+                    @change="processFile($event)"
+                    ref="myFileInput"
+                >
+            </div>
             <div class="input_field" :class="{invalid: $v.formData.title.$error}">
                 <label>Title</label>    
                 <input 
@@ -65,7 +77,8 @@ export default {
                 title: '',
                 desc: '',
                 content: '',
-                rating: ''
+                rating: '',
+                img: ''
             }
         }
     },
@@ -89,19 +102,28 @@ export default {
             let status = this.$store.getters['admin/addPost'];
             if(status) {
                 this.clearPost()
+                this.$store.commit('admin/clearImageUpload')
             }
 
             return status;
+        },
+        imageUpload() {
+            let imageUrl = this.$store.getters['admin/imageUpload'];
+            // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+            this.formData.img = imageUrl;
+            return imageUrl
         }
     },
     methods: {
         clearPost() {
             this.$v.$reset();
+            this.$refs.myFileInput.value='';
             this.formData = {
                 title: '',
                 desc: '',
                 content: '',
-                rating: ''
+                rating: '',
+                img: ''
             }
         },
         submitHandler() {
@@ -124,7 +146,15 @@ export default {
         dialogOnConfirm() {
             this.dialog = false;
             this.addPost();
+        },
+        processFile(event)
+        {
+            let file = event.target.files[0];
+            this.$store.dispatch('admin/imageUpload', file)
         }
+    },
+    destroyed() {
+        this.$store.commit('admin/clearImageUpload')
     }
 }
 </script>
