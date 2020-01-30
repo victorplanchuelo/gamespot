@@ -7,7 +7,7 @@ import Vuelidate from 'vuelidate'
 
 import wysiwyg from 'vue-wysiwyg'
 
-import { MdCard, MdDialog, MdButton, MdContent } from 'vue-material/dist/components'
+import { MdCard, MdDialog, MdButton, MdContent, MdTable, MdDialogConfirm } from 'vue-material/dist/components'
 import 'vue-material/dist/vue-material.min.css'
 
 import Button from './components/UI/Button.vue';
@@ -18,6 +18,8 @@ Vue.use(MdCard)
 Vue.use(MdButton)
 Vue.use(MdDialog)
 Vue.use(MdContent)
+Vue.use(MdTable)
+Vue.use(MdDialogConfirm)
 
 /*Vue Resource*/
 Vue.use(VueResource)

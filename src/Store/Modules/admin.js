@@ -13,7 +13,8 @@ const admin = {
         authFailed: false,
         refreshLoading: true,
         addPost: false,
-        imageUpload: null
+        imageUpload: null,
+        posts: null
     },
     getters: {
         isAuth(state) {
@@ -27,6 +28,9 @@ const admin = {
         },
         imageUpload(state) {
             return state.imageUpload;
+        },
+        getAdminPosts(state) {
+            return state.posts
         }
     },
     mutations: {
@@ -65,6 +69,9 @@ const admin = {
         },
         clearImageUpload(state) {
             state.imageUpload = null
+        },
+        getAdminPosts(state, posts) {
+            state.posts = posts
         }
     }, 
     actions: {
@@ -140,6 +147,35 @@ const admin = {
             .then(response => {
                 commit('imageUpload', response)
             });
+        },
+        getAdminPosts({commit}) {
+            Vue.http.get('posts.json')
+            .then(response => response.json())
+            .then(response => {
+                const posts = []
+                for(let key in response) {
+                    posts.push({
+                        ...response[key],
+                        id: key
+                    })
+                }
+
+                commit('getAdminPosts', posts.reverse())
+            })
+        },
+        deletePost({commit, state}, payload) {
+            Vue.http.delete(`posts/${payload}.json?auth=${state.token}`)
+            .then(response => {
+                console.log(response, payload)
+                //se puede hacer como se va  a quedar o también se puede llamar a la funcion getAdminPosts para actualizar la lista de posts
+                let newPosts = []
+                state.posts.forEach(post => {
+                    if(post.id != payload) {
+                        newPosts.push(post)
+                    }
+                })
+                commit('getAdminPosts', newPosts)
+            })
         }
     }
 }
